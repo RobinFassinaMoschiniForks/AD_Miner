@@ -1,0 +1,93 @@
+from ad_miner.sources.modules.controls import Control
+from ad_miner.sources.modules.controls import register_control
+
+from ad_miner.sources.modules.page_class import Page
+from ad_miner.sources.modules.grid_class import Grid
+from ad_miner.sources.modules.graph_class import Graph
+
+from ad_miner.sources.modules.utils import grid_data_stringify
+from ad_miner.sources.modules.common_analysis import presence_of
+
+from urllib.parse import quote
+
+
+@register_control
+class objects_to_adcs(Control):
+    "Legacy control"
+
+    def __init__(self, arguments, requests_results) -> None:
+        super().__init__(arguments, requests_results)
+
+        self.azure_or_onprem = "on_premise"
+
+        # Do NOT change existing control_key, as it will break evolution with older ad miner versions
+        self.control_key = "objects_to_adcs"
+
+        # self.description = "test control description" #TODO maybe ?
+
+        self.objects_to_adcs = requests_results["objects_to_adcs"]
+
+    def run(self):
+        if self.objects_to_adcs is None:
+            return
+        page = Page(
+            self.arguments.cache_prefix,
+            "objects_to_adcs",
+            "Compromisable ADCS Servers",
+            "objects_to_adcs",
+        )
+        grid = Grid("Objects to ADCS servers")
+        grid.setheaders(["Domain", "Name", "Path to ADCS"])
+
+        self.ADCS_path_sorted = {}
+        self.ADCS_entry_point = []
+
+        for path in self.objects_to_adcs:
+            self.ADCS_entry_point.append(path.nodes[0].name)
+            try:
+                self.ADCS_path_sorted[path.nodes[-1].name].append(path)
+            except KeyError:
+                self.ADCS_path_sorted[path.nodes[-1].name] = [path]
+
+        self.ADCS_entry_point = list(set(self.ADCS_entry_point))
+
+        cleaned_data = []
+
+        for key, paths in self.ADCS_path_sorted.items():
+            tmp_data = {}
+            tmp_data["Domain"] = (
+                '<i class="bi bi-globe2"></i> ' + paths[0].nodes[-1].domain
+            )
+            tmp_data["Name"] = '<i class="bi bi-server"></i> ' + key
+            nb_path_to_adcs = len(paths)
+            sortClass = str(nb_path_to_adcs).zfill(6)
+            tmp_data["Path to ADCS"] = grid_data_stringify(
+                {
+                    "link": "path_to_adcs_%s.html" % quote(str(key)),
+                    "value": f"{nb_path_to_adcs} paths to ADCS <i class='bi bi-box-arrow-up-right'></i>",
+                    "before_link": f"<i class='bi bi-shuffle {sortClass}' aria-hidden='true'></i>",
+                }
+            )
+            cleaned_data.append(tmp_data)
+
+            graph_page = Page(
+                self.arguments.cache_prefix,
+                "path_to_adcs_%s" % key,
+                "Path to ADCS through " + key,
+                "path_to_adcs",
+            )
+            graph = Graph()
+            graph.setPaths(paths)
+            graph_page.addComponent(graph)
+            graph_page.render()
+
+        grid.setData(cleaned_data)
+        page.addComponent(grid)
+        page.render()
+
+        self.data = len(self.ADCS_path_sorted.keys()) if self.ADCS_path_sorted else 0
+
+        self.name_description = f"{self.data} ADCS servers can be compromised"
+
+    def get_rating(self) -> int:
+        return presence_of(self.ADCS_path_sorted.keys())

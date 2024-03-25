@@ -1,5 +1,5 @@
-
 from ad_miner.sources.modules.utils import HTML_DIRECTORY
+
 
 class Graph:
     def __init__(self, template="graph", path_limit=80000):
@@ -72,9 +72,22 @@ class Graph:
                 else:
                     attribute2 = "none"
 
-
-                list_labels = ["User", "Foreignsecurityprincipal", "GPO", "Computer", "OU", "Group", "Domain", "ADLocalGroup", "Container", "Unknown", "Group_cluster", "Device", "AZTenant", "AZRole"]
-
+                list_labels = [
+                    "User",
+                    "Foreignsecurityprincipal",
+                    "GPO",
+                    "Computer",
+                    "OU",
+                    "Group",
+                    "Domain",
+                    "ADLocalGroup",
+                    "Container",
+                    "Unknown",
+                    "Group_cluster",
+                    "Device",
+                    "AZTenant",
+                    "AZRole",
+                ]
 
                 if path.nodes[i].labels in list_labels:
                     label_instance = path.nodes[i].labels
@@ -94,16 +107,19 @@ class Graph:
                     self.nodes[path.nodes[i].id] = final_graph_node
 
                 else:
-                    if node_position != self.nodes[path.nodes[i].id]["group"].split("_")[0]:
+                    if (
+                        node_position
+                        != self.nodes[path.nodes[i].id]["group"].split("_")[0]
+                    ):
                         self.nodes[path.nodes[i].id][
                             "group"
                         ] = f"intermediate_{label_instance}_{attribute1}_{attribute2}"
 
-                if i!=0:
+                if i != 0:
                     relation = {
-                        "from": path.nodes[i-1].id,
+                        "from": path.nodes[i - 1].id,
                         "to": path.nodes[i].id,
-                        "label": path.nodes[i-1].relation_type,
+                        "label": path.nodes[i - 1].relation_type,
                     }
 
                     # Avoid relation duplicated to keep graph clean
