@@ -12,12 +12,7 @@ current_date = today.strftime("%Y%m%d")
 MODULES_DIRECTORY = Path(__file__).parent
 
 
-DESCRIPTION_MAP = json.loads(
-    (MODULES_DIRECTORY / "description.json").read_text(encoding="utf-8")
-)
-CONFIG_MAP = json.loads(
-    (MODULES_DIRECTORY / "config.json").read_text(encoding="utf-8")
-)
+CONFIG_MAP = json.loads((MODULES_DIRECTORY / "config.json").read_text(encoding="utf-8"))
 HTML_DIRECTORY = Path(__file__).parent.parent / "html"
 JS_DIRECTORY = Path(__file__).parent.parent / "js"
 
@@ -154,7 +149,9 @@ def days_format(nb_days: int) -> str:
     elif m > 0:
         return f"<i class='{sortClass} bi bi-calendar3'></i> {m} month{'s' if m > 1 else ''} and {d} day{'s' if d > 1 else ''}"
     else:
-        return f"<i class='{sortClass} bi bi-calendar3'></i> {d} day{'s' if d > 1 else ''}"
+        return (
+            f"<i class='{sortClass} bi bi-calendar3'></i> {d} day{'s' if d > 1 else ''}"
+        )
 
 
 def grid_data_stringify(raw_data: dict) -> str:

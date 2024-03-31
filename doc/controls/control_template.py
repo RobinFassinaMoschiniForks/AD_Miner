@@ -12,15 +12,27 @@ class my_control_class_name(Control):  # TODO change the class name
         # TODO define this to "azure" or "on_premise" accordingly
         self.azure_or_onprem = ""
 
+        # TODO define this to the category in which the control should appear
+        # on the main page (passwords, kerberos, permissions, misc, az_permissions,
+        # az_passwords, az_misc, ms_graph)
+        self.category = ""
+
         # TODO add the control key. This string should be uniq and will be used
         # by the code and written to the data json.
         # Do NOT change existing control_key, as it will break evolution with older ad miner versions
         self.control_key = "users_shadow_credentials_to_non_admins"
 
-        # self.description = "test control description" #TODO maybe ?
+        # TODO define the control page title and texts
+        self.title = ""
+        self.description = ""
+        self.interpretation = ""
+        self.risk = ""
+        self.poa = ""
 
     def run(self):
         # TODO The code for the analysis goes here
+
+        # TODO TODELETE TEMP TOREMOVE change page description to self.get_dico_description()
 
         # TODO define the metric of your control
         # it will be stored in the data json

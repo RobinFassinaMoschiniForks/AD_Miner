@@ -7,13 +7,8 @@ from numpy import pi, cos, sin, linspace
 from random import randint
 
 from ad_miner.sources.modules import common_analysis
-from ad_miner.sources.modules.smolcard_class import (
-    SmolCard,
-    dico_category,
-    dico_category_invert,
-    category_repartition_dict,
-)
-from ad_miner.sources.modules.utils import DESCRIPTION_MAP, TEMPLATES_DIRECTORY
+from ad_miner.sources.modules.smolcard_class import SmolCard
+from ad_miner.sources.modules.utils import TEMPLATES_DIRECTORY
 
 
 def americanStyle(n: int) -> str:
@@ -108,7 +103,13 @@ def get_raw_other_data(arguments):
         return None
 
 
-def complete_data_evolution_time(data, raw_other_list_data):
+def complete_data_evolution_time(
+    data,
+    raw_other_list_data,
+    dico_category,
+    category_repartition_dict,
+    dico_category_invert,
+):
     data["label_evolution_time"] = []
 
     list_immediate_risk = {"on_premise": [], "azure": []}
@@ -501,7 +502,19 @@ def render(
     data_rating,
     dico_name_description,
     dico_rating_color,
+    dico_category,
+    DESCRIPTION_MAP,
 ):
+    dico_category_invert = {}
+    for key in dico_category:
+        for value in dico_category[key]:
+            dico_category_invert[value] = key
+
+    category_repartition_dict = {}
+    for k in ["passwords", "kerberos", "permissions", "misc"]:
+        category_repartition_dict[k] = "on_premise"
+    for k in ["az_permissions", "az_passwords", "az_misc", "ms_graph"]:
+        category_repartition_dict[k] = "azure"
 
     if arguments.evolution != "":
         raw_other_list_data = get_raw_other_data(arguments)
@@ -541,7 +554,11 @@ def render(
         raw_other_list_data = raw_other_list_data_2
 
     data = complete_data_evolution_time(
-        data, raw_other_list_data
+        data,
+        raw_other_list_data,
+        dico_category,
+        category_repartition_dict,
+        dico_category_invert,
     )  # for the chart evolution over time
 
     # dico_name_description = {
@@ -884,6 +901,8 @@ def render(
                             details=dico_name_description.get(vuln),
                             evolution_data=data["dico_data_evolution_time"],
                             evolution_labels=data["label_evolution_time"],
+                            category=k,
+                            title=DESCRIPTION_MAP[vuln]["title"],
                         ).render(page_f, return_html=True)
 
             modal_header = open(

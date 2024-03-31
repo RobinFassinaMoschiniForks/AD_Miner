@@ -19,8 +19,13 @@ class TestControle1(Control):
         super().__init__(arguments, requests_results)
         self.azure_or_onprem = "on_premise"
         self.control_key = "users_shadow_credentials_to_non_admins"
+        self.category = "kerberos"
 
-        # self.description = "test control description" #TODO
+        self.title = "Low-privilege users impersonation"
+        self.description = "Users that can perform a shadow credentials attack and impersonate unprivileged accounts. It allows user to use a key for authentication."
+        self.interpretation = ""
+        self.risk = "This feature can be used by malicious actors to stealthily setup a persistant access."
+        self.poa = "Review these privileges and it is advised to check if no malicious actors have used this feature for a previous attack."
 
         self.users_shadow_credentials_to_non_admins = requests_results[
             "users_shadow_credentials_to_non_admins"
@@ -64,7 +69,7 @@ class TestControle1(Control):
                 self.arguments.cache_prefix,
                 f"users_shadow_credentials_to_non_admins_to_{data[target]['target']}",
                 "List of targets that can be compromised through shadow credentials",
-                "users_shadow_credentials",
+                self.get_dico_description(),
             )
             graph = Graph()
             graph.setPaths(data[target]["paths"])
@@ -80,7 +85,7 @@ class TestControle1(Control):
             self.arguments.cache_prefix,
             "users_shadow_credentials_to_non_admins",
             "List of targets that can be compromised through shadow credentials",
-            "users_shadow_credentials",
+            self.get_dico_description(),
         )
         grid = Grid("Users")
         grid.setheaders(["domain", "target", "paths"])

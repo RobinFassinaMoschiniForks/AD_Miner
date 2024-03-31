@@ -17,6 +17,11 @@ class Control:
     def __init__(self, arguments, requests_results) -> None:
         self.arguments = arguments
         self.neo4j_results = requests_results
+        self.title = ""
+        self.description = ""
+        self.interpretation = ""
+        self.risk = ""
+        self.poa = ""
 
     def run(self):
         error_message = "Your control " + str(self)
@@ -27,6 +32,16 @@ class Control:
         error_message = "Your control " + str(self)
         error_message += " should have a get_rating() function defined."
         raise NotImplementedError(error_message)
+
+    def get_dico_description(self) -> dict:
+        self.dico_description: dict[str, str] = {
+            "title": self.title,
+            "description": self.description,
+            "interpretation": self.interpretation,
+            "risk": self.risk,
+            "poa": self.poa,
+        }
+        return self.dico_description
 
 
 __all__ = []

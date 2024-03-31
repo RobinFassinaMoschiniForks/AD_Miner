@@ -20,11 +20,17 @@ class non_dc_with_unconstrained_delegations(Control):
         super().__init__(arguments, requests_results)
 
         self.azure_or_onprem = "on_premise"
+        self.category = "kerberos"
 
         # Do NOT change existing control_key, as it will break evolution with older ad miner versions
         self.control_key = "non-dc_with_unconstrained_delegations"
 
-        # self.description = "test control description" #TODO maybe ?
+        self.title = "Objects with unconstrained delegations"
+        self.description = "These objects are allowed to connect to any service with the identity of another user who connected to them."
+        self.interpretation = ""
+        self.risk = "These objects can impersonate any domain and eventually lead to full compromise of the infrastructure. Optimally, this list should be empty as delegation should be set up with constrained delegation."
+        self.poa = "Unless necessary, switch to constrained delegation for a safer infrastructure."
+
         self.kud = requests_results["kud"]
         self.kud_graphs = {}
 
@@ -43,7 +49,7 @@ class non_dc_with_unconstrained_delegations(Control):
             self.arguments.cache_prefix,
             "non-dc_with_unconstrained_delegations",
             "Path to Unconstrained Delegations",
-            "non-dc_with_unconstrained_delegations",
+            self.get_dico_description(),
         )
         grid = Grid(
             "Numbers of path to domain admin using Kerberos Unconstrained Delegations"

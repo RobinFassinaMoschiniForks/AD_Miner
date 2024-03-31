@@ -201,16 +201,41 @@ def main() -> None:
     dico_data = {}
     dico_data["value"] = {}
 
+    dico_category: dict[str, list[str]] = {
+        "passwords": [],
+        "kerberos": [],
+        "permissions": [],
+        "misc": [],
+        "az_permissions": [],
+        "az_passwords": [],
+        "az_misc": [],
+        "ms_graph": [],
+    }
+
+    DESCRIPTION_MAP: dict[str, dict[str, str]] = {}
+
     # Run controls, generate secondary pages, and populate legacy dicts
 
     for c in controls.control_list:
         control = c(arguments, requests_results)
         control.run()
 
+        dico_category[control.category].append(control.control_key)
+
+        DESCRIPTION_MAP[control.control_key] = {
+            "title": control.title,
+            "description": control.description,
+            "interpretation": control.interpretation,
+            "risk": control.risk,
+            "poa": control.poa,
+        }
+
         dico_name_description[control.control_key] = control.name_description
+
         data_rating[control.azure_or_onprem][control.get_rating()].append(
             control.control_key
         )
+
         dico_data["value"][control.control_key] = control.data
 
     dico_rating_color = rating_color(data_rating)
@@ -222,6 +247,8 @@ def main() -> None:
         data_rating,
         dico_name_description,
         dico_rating_color,
+        dico_category,
+        DESCRIPTION_MAP,
     )
     neo4j.close()
 

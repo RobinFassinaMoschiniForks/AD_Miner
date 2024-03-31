@@ -19,11 +19,16 @@ class objects_to_adcs(Control):
         super().__init__(arguments, requests_results)
 
         self.azure_or_onprem = "on_premise"
+        self.category = "permissions"
 
         # Do NOT change existing control_key, as it will break evolution with older ad miner versions
         self.control_key = "objects_to_adcs"
 
-        # self.description = "test control description" #TODO maybe ?
+        self.title = "Compromisable ADCS servers"
+        self.description = "ADCS (Active Directory Certificate Services) is a Windows Server feature that provides a customizable certification authority (CA) for issuing and managing digital certificates. Digital certificates are used to authenticate and secure communication between devices, servers, and users on a network."
+        self.interpretation = ""
+        self.risk = "These ADCS servers can be compromised, which means that an attacker can issue fraudulent certificates, which can be used to impersonate legitimate users or servers on the network. This can lead to unauthorized access to sensitive information, data theft, or network disruption."
+        self.poa = "Ensure that the existing privileges on these ADCS servers are legitimate and limit them to administrators optimaly."
 
         self.objects_to_adcs = requests_results["objects_to_adcs"]
 
@@ -34,7 +39,7 @@ class objects_to_adcs(Control):
             self.arguments.cache_prefix,
             "objects_to_adcs",
             "Compromisable ADCS Servers",
-            "objects_to_adcs",
+            self.get_dico_description(),
         )
         grid = Grid("Objects to ADCS servers")
         grid.setheaders(["Domain", "Name", "Path to ADCS"])
