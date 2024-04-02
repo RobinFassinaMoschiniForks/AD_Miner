@@ -34,12 +34,6 @@
     "risk": "N/A",
     "poa": "N/A"
   },
-  "computers_last_connexion": {
-    "title": "Ghost computers",
-    "description": "Computer last logon to help identify computer objects that still exist in the domain but were most likely decommissioned.",
-    "risk": "Computers with a last logon larger than 60 days are considered ghost and are most likely to correspond to computers that have been improperly terminated. Although these computers may no longer exist physically, privileges that they may have been granted may still be abused in attack path. For example, if the machine account of a ghost computer A has local administration privileges over computer B and if current ACEs allow writing over that ghost computer's msDs-KeyCredentialLink attribute, then this can be abused to obtain admin access over computer B.",
-    "poa": "Confirm that listed ghost computers no longer exist and delete corresponding objects from Active Directory."
-  },
   "users": {
     "description": "List of all users on any domain",
     "risk": "N/A",
@@ -73,36 +67,6 @@
     "risk": "Ideally, this list should be reduced to the strict minimum. RDP access allows attackers to pivot in the network.",
     "poa": "Review this list to ensure RDP access is legitimate."
   },
-  "never_expires": {
-    "title": "Non-expiring passwords",
-    "description": "These accounts have their passwords set to never expire.",
-    "risk": "Ideally, this list should be empty. Non-expiring passwords are easier to exploit for an attacker.",
-    "poa": "Check that all of these users have a reason to be on this list."
-  },
-  "users_pwd_cleartext": {
-    "title": "Users with cleartext passwords",
-    "description": "These users have their passwords stored somewhere in plaintext.",
-    "risk": "This list should be strictly zero. Any attacker finding a password in cleartext would be able to use it instantly to enter in the AD. This represents a major security issue.",
-    "poa": "Review this list and change password for all of these accounts. Make sure their new passwords are not stored in cleartext anymore."
-  },
-  "users_pwd_not_changed_since": {
-    "title": "Users with old passwords",
-    "description": "These accounts have not changed their password for a long period of time.",
-    "risk": "Users should regularily change their passwords. This list should be as reduced as possible. Users not changing their password could be a securtiy flaw if these passwords happend to leak.",
-    "poa": "Make sure your GPO asks for password renewal and that it is enforced."
-  },
-  "dormants_accounts": {
-    "title": "Dormant accounts",
-    "description": "List of all users who have their accounts unused for a long period of time.",
-    "risk": "As dormant accounts represent an anomaly, this list should be reduced as much as possible. Unused accounts are a vector of attack as they keep their privilege.",
-    "poa": "Dormant accounts should be disabled when confirmed as not used anymore."
-  },
-  "computers_without_laps": {
-    "title": "Machines without LAPS",
-    "description": "Microsoft Local Administrator Password Solution (LAPS) allows local admnistrators to manage different passwords on local administrator accounts.",
-    "risk": "The more computers are configured with LAPS, the better, especially on critical servers/machines. Without LAPS, it becomes tedious to have different passwords on local administrator for different computers, resulting in reuse of passwords and a risk of lateral movement.",
-    "poa": "LAPS is a good tool to use, consider installing it or expanding its usage to more computers."
-  },
   "_paths_to_ou_handlers": {
     "description": "Graph of paths leading to OU handlers",
     "risk": "Compromission paths to OU handlers represent the exposed attack surface that the AD environment presents to the attacker in order to gain corresponding privileges.",
@@ -112,18 +76,6 @@
     "description": "Microsoft Local Administrator Password Solution (LAPS) allows local admnistrators to manage different passwords on local administrator accounts.",
     "risk": "The more computers are configured with LAPS, the better, especially on critical servers/machines. Without LAPS, it becomes tedious to have different passwords on local administrator for different computers, resulting in reuse of passwords and a risk of lateral movement.",
     "poa": "LAPS is a good tool to use, consider installing it or expanding its usage to more computers."
-  },
-  "can_read_laps": {
-    "title": "Readable LAPS passwords",
-    "description": "Accounts that can read LAPS local administrator passwords.",
-    "risk": "These objects can read LAPS local administrator passwords. Objects with rights to read LAPS passwords are a potential threat as they can read the password of the local administrator account.",
-    "poa": "Review the accounts and make sure that their privileges are legitimate."
-  },
-  "users_shadow_credentials": {
-    "title": "Users can impersonate privileged accounts",
-    "description": "The following list shows users having sufficient privileges to perform shadow credentials on target privileged users.",
-    "risk": "This list should be strictly empty, as it otherwise represents a major security flaw. This attack allows impersonnation of privileged users. Performing this attack relies on a particular kerberos authentication mode and would not be noticed by victims.",
-    "poa": "All these users should have their privilege reduced so that this attack is not possible anymore."
   },
   "dom_admin_on_non_dc": {
     "title": "Domain admin logged on non-DC",
@@ -136,17 +88,6 @@
     "description": "Some machine accounts have administration privileges over other computers accounts.",
     "risk": "This controls reveals computers (i.e., the computer machine account) that have local administration privileges over other computers. This weakness can be leveraged by any domain user to relay coerced connections and eventually obtain local administration privileges over target computer. Coerced authentication can be triggered using numerous techniques such as EFSRPC (e.g., using PetitPotam). This attack requires network access over target machine and that SMB signing be not required (which is default).",
     "poa": "Microsoft's primary goal is not to mitigate coerced-authentication based attacks. Indeed, the general recommendation is to require SMB signing and also to ensure that unnecessarry relayable services (e.g., SMB, RPC, etc.) be filtered to users."
-  },
-  "computers_path_to_da": {
-    "description": "All compromission paths from computers to domain administrators.",
-    "risk": "This graph shows all the paths that an attacker could take to become domain admin if they had compromised a computer. These paths show potential privilege escalation paths in the domain. If an attacker compromises a computer, he could use these paths to become domain admin.",
-    "poa": "Review these paths and make sure that they are not exploitable. Cut some of the links between the Active Directory objects by changing configuration in order to reduce the number of possible paths."
-  },
-  "users_admin_of_computers": {
-    "title": "Users admin of machines",
-    "description": "Users have administration rights over machines, creating potential compromission paths.",
-    "risk": "You should watch out for accounts who are admin of too many computers or users who should not be admin at all. Wrongfully configured administration privileges are a big vector of vertical and lateral movement.",
-    "poa": "Review this list to ensure admin privilege are effectively provided on a need to know basis."
   },
   "user_admin": {
     "description": "List of computers where the selected users have admin privileges.",
@@ -202,30 +143,6 @@
     "risk": "These accounts can impersonate any domain and eventually lead to full compromise of the infrastructure. Optimally, this list should be empty as delegation should be set up with constrained delegation.",
     "poa": "Unless necessary, switch to constrained delegation for a safer infrastructure."
   },
-  "users_constrained_delegations": {
-    "title": "Users with constrained delegations",
-    "description": "These accounts have constrained delegations privileges.",
-    "risk": "Accounts that have constrained delegation rights can impersonate any user against a determined service. This means that this service will trust the accounts with whatever identity is presented. Compromission of an account with constrained delegation would allow the attacker to progress deeper in the information system and further compromise the domain.",
-    "poa": "Set the accounts that should not be impersonated as 'Protected users' so the service cannot be abused to use their identity. Set the MachineAccountQuota to 0 if possible, so that attackers cannot create eligible accounts for constrained delegations."
-  },
-  "as_rep": {
-    "title": "AS-REP Roastable accounts",
-    "description": "These accounts do not need to authenticate to receive a response from the KDC containing the hash of the password of the account.",
-    "risk": "Ideally, this list should be strictly empty. With the KRB_AS_REP, an attacker can find the password of the account offline and then take complete control of the account.",
-    "poa": "Change the configuration of these accounts and make sure to not disable the need to authenticate."
-  },
-  "kerberoastables": {
-    "title": "Kerberoastable accounts",
-    "description": "Some accounts are vulnerable to a Kerberoasting attack. If their password is weak, it could be recovered in plaintext.",
-    "risk": "This list should be as short as possible and restricted to service accounts. This list contains accounts that have Service Principal Name (SPN) set. Accounts like this could be compromised in case their password is weak.",
-    "poa": "If the accounts listed here are not service accounts (i.e. if they don't have a strong, automatically-generated password), you should investigate as to why the account has an SPN. You should change the password for these accounts to something very strong, or remove the SPN from these accounts if it is not necessary."
-  },
-  "krb_last_change": {
-    "title": "Old KRBTGT password",
-    "description": "Last change of password for KRBTGT account.",
-    "risk": "The more regularly these passwords are changed, the better. If KRBTGT account is compromised, the whole infrastructure is as well.",
-    "poa": "Check that KRBTGT accounts had their passwords changed recently."
-  },
   "main_compromise_paths": {
     "description": "This histogram shows the nodes that have the most compromise paths",
     "risk": "Paths with the most compromise paths are most at risk",
@@ -270,27 +187,10 @@
     "risk": "",
     "poa": ""
   },
-  "obsolete_os": {
-    "description": "List of computers with obsolete OS",
-    "risk": "The bigger this list, the more exposed to critical exploits your infrastructure is. Obsolete OS are not maintained anymore by their manufacturers and are often vulnerable to public exploits",
-    "poa": "Switch to a more up-to-date OS on these computers"
-  },
-  "dc_impersonation": {
-    "title": "Objects can impersonate Domain Controllers",
-    "description": "Non-domain admins that can directly or indirectly impersonate a Domain Controller",
-    "risk": "The ability to impersonate the machine account of a domain controller allows to perform very powerful attacks such as DCSync. The accounts listed here are not member of domain admin groups but can still impersonate domain controllers, effectively giving them the privileges to dump all the data of Active Directory (including all users password hashes). If any of these accounts is compromised, then the domain it is attached to is can be considered compromised as well.",
-    "poa": "Review the accounts to check if this privilege is legitimate. If not, remove it."
-  },
   "objects_with_adminSDHolder": {
     "description": "AdminSDHolder protects certain domains objects from permission changes",
     "risk": "AdminSDHolder contains a list of permissions (ACLs) that are applied to the objects protected by the AdminSDHolder. As an example, AdminSDHolder can contain 'Authenticated Users : Read', meaning that all members of the 'Authenticated Users' group will be able to read the objects protected by the AdminSDHolder. Permissions described in the AdminSDHolder are applied to the objects every 60 minutes. AdminSDHolder is a way for attackers to persist in the domain. An attacker could for example add permissions for an object that they have already compromised, giving them privileges over the protected objects.",
     "poa": "There needs to be detection of changes on the AdminSDHolder AD object. Changes on the object are relatively rare and should therefore be monitored as indicators of compromise (IoCs)."
-  },
-  "graph_list_objects_rbcd": {
-    "title": "Objects that can perform an RBCD attack on computers",
-    "description": "Users that can perform Ressource-Based Constrained Delegation attacks",
-    "risk": "Users that have GenericWrite ACE on machines can perform RBCD attacks. Thanks to the GenericWrite access, the attacker can edit the 'msDS-AllowedToActOnBehalfOfOtherIdentity' attribute of the targeted machine and add an attacker-controlled account to it in order to impersonate any account of the domain. In short, if the attacker has GenericWrite over the target machine, then they can have local administration privileges. An attacker could take advantage of this misconfiguration to further compromise the domains.",
-    "poa": "In order to perform RBCD attacks, the attackers need to use an account with a Service Principal Name. In order to make it more difficult for them, you cant reduce the 'MachineAccountQuota' domain-level attribute to 0 so that an attacker cannot create an SPN-enabled account for himself. What's more, review all the GenericWrite ACEs you can find and ask yourself if they are legitimate or if they could be removed."
   },
   "domain_OUs": {
     "description": "Organisational Units of the domain",
@@ -310,11 +210,6 @@
     "risk": "Inadequate administration rights on computers can lead to easy privilege escalation for an attacker. With a privileged account, it is possible to perform local memory looting to find credentials for example.",
     "poa": "Only a handful of accounts should have administrator privilege on computers to perform some maintenance actions. No normal user should be admin of any computer, not even its own."
   },
-  "kerberoastables_SPN": {
-    "description": "The Service Principle Name associated to a given host. It identifies every service to its host. The presence of a SPN for a given account allows users to request a ticket that contains some cryptographical information about the account's password.",
-    "risk": "Because users' passwords are often weak, the ability to retrieve a ticket creates a risk of easily cracking the password of the user who has a SPN.",
-    "poa": "Review all account's SPNs to check if they are still relevant and if they are, ensure that the account's password is strong."
-  },
   "server_users_could_be_admin": {
     "title": "Compromission paths to servers",
     "description": "Users could gain administration privileges privileges on some servers.",
@@ -328,23 +223,11 @@
     "risk": "",
     "poa": ""
   },
-  "computers_os_obsolete": {
-    "title": "Computers with obsolete OS",
-    "description": "Computers with obsolete OS.",
-    "risk": "As obsolete OS are not maintained by their manufacturers, they are exposed to every future vulnerabilities found.",
-    "poa": "Unless the obsolete OS is absolutely needed, it is advised to upgrade to the latest version."
-  },
   "graph_path_objects_to_ou_handlers": {
     "title": "Objects have paths to compromise OU handlers",
     "description": "Objects that have paths to compromise OU handlers.",
     "risk": "OUs that can be used to leverage access to privileged accounts or objects are particularly sensitive.",
     "poa": "Review the exploitation paths for these OUs and remove dangerous links."
-  },
-  "can_read_gmsapassword_of_adm": {
-    "title": "Objects can read GMSA passwords of administrators",
-    "description": "GMSA stands for Group Managed Service Account. GMSAs are a special type of service account that are designed to provide improved security and manageability for service applications. GMSAs have their own passwords that are managed by the Active Directory and automatically rotated, making them more secure than traditional service accounts.",
-    "risk": "Being able to read GMSA passwords means that accounts can be fully compromised.",
-    "poa": "Review these rights to ensure they are legitimate and useful."
   },
   "vuln_sidhistory_dangerous": {
     "title": "Objects have a SID history",
@@ -358,12 +241,6 @@
     "description": "Objects with a compromission path to an Operator Group.",
     "risk": "As Oprator Groups have high privilege, a compromission path to one is a major threat to the security of the domain.",
     "poa": "Review all these paths and try to remove as many dangerous links as possible."
-  },
-  "vuln_functional_level": {
-    "title": "Functional level of the domain",
-    "description": "The functional level of an Active Directory domain refers to the level of compatibility and functionality that the domain supports. It determines which features and capabilities are available for the domain controllers within that domain.",
-    "risk": "Using a low functional level in Active Directory can present security risks, primarily because older functional levels may lack certain security features and improvements that have been introduced in newer versions of Windows Server.",
-    "poa": "To mitigate these security risks, it's generally advisable to raise the functional level of your Active Directory domains to a level that corresponds to the version of Windows Server you are running, or at least to a reasonably recent level that provides essential security features."
   },
   "vuln_permissions_adminsdholder": {
     "title": "Paths to the AdminSDHolder container",
@@ -397,29 +274,11 @@
     "risk": "This representation exposes the most common links to become domain administrator, which means the more likely to be used during an attack.",
     "poa": "Tackling the most common paths is a good approach to limit the risk of a compromission as it removes most of the paths to domain administrator."
   },
-  "users_password_not_required": {
-    "title": "Users that can bypass your password policy",
-    "description": "Those users have the attribute 'Password not required'. This attribute technically allows the account to accept blank password to be set and even override the password policy of the company.",
-    "risk": "Such misconfiguration could lead to some account having non compliant password suck as a blank or weak password and might be easier to compromise.",
-    "poa": "Ensure that this list is empty by setting the ms-DS-User-Password-Not-Required attribute to false for every user."
-  },
   "anomaly_acl": {
     "title": "Anomaly ACL",
     "description": "An ACL (Access Control List) is a security mechanism that defines permissions and access rights for objects within the Active Directory structure.",
     "risk": "Misconfigured ACL can create access points or privilege escalation that an attacker could use to compromise the domain.<br /><br /><i class='bi bi-star-fill'></i><i class='bi bi-star-fill'></i><i class='bi bi-star-fill'></i> : At least one domain admin as target<br /><i class='bi bi-star-fill'></i><i class='bi bi-star-fill'></i><i class='bi bi-star'></i> : At least one object has a path to domain admin<br /><i class='bi bi-star-fill'></i><i class='bi bi-star'></i><i class='bi bi-star'></i> : At least one object admin of a computer<br /><i class='bi bi-star'></i><i class='bi bi-star'></i><i class='bi bi-star'></i> : Other",
     "poa": "Regularly review and clean up ACL entries for users and groups that no longer require them."
-  },
-  "empty_groups": {
-    "title": "Groups without any member",
-    "description": "These groups do not contain any user, computer or any other group, which probably means they are not used anymore.",
-    "risk": "As unused groups still retain their privilege but are less monitored, an attacker could exploit one of these to gain further access to the information system.",
-    "poa": "Review these groups and check wether they should have lesser privilege or be deleted."
-  },
-  "empty_ous": {
-    "title": "OUs without any member",
-    "description": "These OUs do not contain any user, computer or any other group, which probably means they are not used anymore.",
-    "risk": "As unused OUs still retain their privilege but are less monitored, an attacker could exploit one of these to gain further access to the information system.",
-    "poa": "Review these OUs and check wether they should have lesser privilege or be deleted."
   },
   "has_sid_history": {
     "title": "Objects who can exploit SID History",
@@ -432,12 +291,6 @@
     "description": "Users privileges are not limited to their domains. Sometimes some users may have direct or non-direct local admin or even domain admin privilege on a foreign domain.",
     "risk": "Cross-domain privileges are quite dangerous and will help attackers to pivot to other domains if they manage to compromise a domain",
     "poa": "Review these privileges, this list should be as little as possible."
-  },
-  "primaryGroupID_lower_than_1000": {
-    "title": "User with PrimaryGroupID lower than 1000",
-    "description": "Accounts with either an unknown RID, or RID-name missmatches.",
-    "risk": "In Active Directory, the primaryGroupId attribute of a user or machine account implicitly assigns this account to a group, even if this group is not listed in the user's memberOf attribute. Membership of a group via this attribute does not appear in the list of group members in certain interfaces. This attribute can be used to hide an account's membership of a group.",
-    "poa": "We recommend that you reset the primaryGroupId attributes of the users or computers concerned to their default values."
   },
   "pre_windows_2000_compatible_access_group": {
     "title": "\"Pre-Windows 2000 Compatible Access\" group",
@@ -462,12 +315,6 @@
     "description": "Privileged accounts not protected by the Protected Users group.",
     "risk": "The Protected Users group should be used to harden authentication and encryption mechanisms for sensitive accounts.",
     "poa": "Privileged accounts must be part of the Protected Users group."
-  },
-  "fgpp": {
-    "title": "Users FGPP",
-    "description": "FGPP applied to a user, directly or via a group",
-    "risk": "FGPP change password and lockout policies if defined",
-    "poa": "The FGPP values overwrite the GPO values"
   },
   "azure_users": {
     "title": "Azure users",

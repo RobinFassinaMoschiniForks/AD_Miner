@@ -1,5 +1,15 @@
 from ad_miner.sources.modules.controls import Control
 from ad_miner.sources.modules.controls import register_control
+from ad_miner.sources.modules import logger
+from ad_miner.sources.modules.page_class import Page
+from ad_miner.sources.modules.grid_class import Grid
+from ad_miner.sources.modules.node_neo4j import Node
+from ad_miner.sources.modules.path_neo4j import Path
+
+from ad_miner.sources.modules.utils import grid_data_stringify, days_format
+from ad_miner.sources.modules.common_analysis import presence_of
+
+from urllib.parse import quote
 
 
 @register_control
@@ -20,12 +30,11 @@ class my_control_class_name(Control):  # TODO change the class name
         # TODO add the control key. This string should be uniq and will be used
         # by the code and written to the data json.
         # Do NOT change existing control_key, as it will break evolution with older ad miner versions
-        self.control_key = "users_shadow_credentials_to_non_admins"
+        self.control_key = "control_key_to_change"
 
         # TODO define the control page title and texts
         self.title = ""
         self.description = ""
-        self.interpretation = ""
         self.risk = ""
         self.poa = ""
 

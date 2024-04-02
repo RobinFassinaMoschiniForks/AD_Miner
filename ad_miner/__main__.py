@@ -82,6 +82,8 @@ def populate_data_and_cache(neo4j: Neo4j) -> dict:
         for request_key, value in neo4j.all_requests.items()
     }
 
+    neo4j.compute_common_cache(requests_results)
+
     return requests_results
 
 

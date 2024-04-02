@@ -16,7 +16,7 @@ class Control:
 
     def __init__(self, arguments, requests_results) -> None:
         self.arguments = arguments
-        self.neo4j_results = requests_results
+        self.requests_results = requests_results
         self.title = ""
         self.description = ""
         self.interpretation = ""

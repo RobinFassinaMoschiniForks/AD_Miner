@@ -260,43 +260,8 @@ def populate_dico_data(data, dico_data, arguments, requests_results, dico_rating
     }
     # dico_data["value"] = {
     #     # On-premise
-    #     "users_pwd_cleartext": (
-    #         len(users.users_pwd_cleartext) if users.users_pwd_cleartext else 0
-    #     ),
-    #     "dc_impersonation": (
-    #         users.users_dc_impersonation_count
-    #         if users.users_dc_impersonation_count
-    #         else 0
-    #     ),
-    #     "users_pwd_not_changed_since": (
-    #         len(domains.users_pwd_not_changed_since_3months)
-    #         if domains.users_pwd_not_changed_since_3months
-    #         else 0
-    #     ),
-    #     "kerberoastables": (
-    #         len(users.users_kerberoastable_users)
-    #         if users.users_kerberoastable_users
-    #         else 0
-    #     ),
-    #     "as_rep": (
-    #         len(users.users_kerberos_as_rep) if users.users_kerberos_as_rep else 0
-    #     ),
     #     "non-dc_with_unconstrained_delegations": (
     #         len(domains.kud_list) if domains.kud_list else 0
-    #     ),
-    #     "users_constrained_delegations": (
-    #         len(computers.users_constrained_delegations)
-    #         if computers.users_constrained_delegations
-    #         else 0
-    #     ),
-    #     "krb_last_change": max(
-    #         [dict["pass_last_change"] for dict in users.users_krb_pwd_last_set],
-    #         default=0,
-    #     ),
-    #     "users_admin_of_computers": (
-    #         len(users.users_admin_computer_count)
-    #         if users.users_admin_computer_count
-    #         else 0
     #     ),
     #     "server_users_could_be_admin": (
     #         users.servers_with_most_paths if users.servers_with_most_paths else 0
@@ -308,16 +273,6 @@ def populate_dico_data(data, dico_data, arguments, requests_results, dico_rating
     #     ),
     #     "nb_domain_admins": (
     #         len(domains.users_nb_domain_admins) if domains.users_nb_domain_admins else 0
-    #     ),
-    #     # "users_shadow_credentials_to_non_admins": (
-    #     #     users.max_number_users_shadow_credentials_to_non_admins
-    #     #     if users.max_number_users_shadow_credentials_to_non_admins
-    #     #     else 0
-    #     # ), DONE
-    #     "users_shadow_credentials": (
-    #         len(users.users_shadow_credentials_uniq)
-    #         if users.users_shadow_credentials_uniq
-    #         else 0
     #     ),
     #     "can_dcsync": len(objects.can_dcsync_nodes) if objects.can_dcsync_nodes else 0,
     #     "computers_members_high_privilege": (
@@ -344,24 +299,11 @@ def populate_dico_data(data, dico_data, arguments, requests_results, dico_rating
     #         if domains.users_to_domain_admin
     #         else 0
     #     ),
-    #     "computers_last_connexion": (
-    #         len(domains.computers_not_connected_since_60)
-    #         if domains.computers_not_connected_since_60
-    #         else 0
-    #     ),
     #     "users_rdp_access": (
     #         len(users.users_rdp_access_1) if users.users_rdp_access_1 else 0
     #     ),
     #     "computers_list_of_rdp_users": (
     #         len(users.users_rdp_access_2) if users.users_rdp_access_2 else 0
-    #     ),
-    #     "never_expires": (
-    #         len(users.users_password_never_expires)
-    #         if users.users_password_never_expires
-    #         else 0
-    #     ),
-    #     "dormants_accounts": (
-    #         len(domains.users_dormant_accounts) if domains.users_dormant_accounts else 0
     #     ),
     #     "unpriv_to_dnsadmins": (
     #         len(users.unpriv_to_dnsadmins) if users.unpriv_to_dnsadmins else 0
@@ -371,20 +313,9 @@ def populate_dico_data(data, dico_data, arguments, requests_results, dico_rating
     #         if len(users.objects_to_operators_member)
     #         else 0
     #     ),
-    #     "computers_os_obsolete": (
-    #         len(computers.list_computers_os_obsolete)
-    #         if computers.list_computers_os_obsolete
-    #         else 0
-    #     ),
     #     "computers_without_laps": computers.stat_laps if computers.stat_laps else 0,
     #     "graph_path_objects_to_ou_handlers": (
     #         domains.nb_starting_nodes_to_ous if domains.nb_starting_nodes_to_ous else 0
-    #     ),
-    #     "vuln_functional_level": (
-    #         len(domains.vuln_functional_level) if domains.vuln_functional_level else 0
-    #     ),
-    #     "graph_list_objects_rbcd": (
-    #         len(list(users.rbcd_graphs.keys())) if users.rbcd_graphs else 0
     #     ),
     #     "vuln_permissions_adminsdholder": (
     #         len(users.vuln_permissions_adminsdholder)
@@ -396,17 +327,9 @@ def populate_dico_data(data, dico_data, arguments, requests_results, dico_rating
     #     ),
     #     "users_GPO_access": domains.number_of_gpo if domains.number_of_gpo else 0,
     #     "da_to_da": domains.crossDomain,
-    #     "can_read_gmsapassword_of_adm": (
-    #         len(users.can_read_gmsapassword_of_adm)
-    #         if users.can_read_gmsapassword_of_adm
-    #         else 0
-    #     ),
+
     #     "dangerous_path": domains.total_dangerous_paths,
-    #     "users_password_not_required": len(users.users_password_not_required),
-    #     "can_read_laps": len(users.can_read_laps_parsed),
     #     "anomaly_acl": users.number_group_ACL_anomaly,
-    #     "empty_groups": len(domains.empty_groups),
-    #     "empty_ous": len(domains.empty_ous),
     #     "has_sid_history": len(users.has_sid_history),
     #     "cross_domain_admin_privileges": domains.cross_domain_total_admin_accounts,
     #     "guest_accounts": len([ude for ude in users.guest_accounts if ude[-1]]),
@@ -423,13 +346,11 @@ def populate_dico_data(data, dico_data, arguments, requests_results, dico_rating
     #             if "Protected Users" not in dic["admin type"]
     #         ]
     #     ),
-    #     "rid_singularities": users.rid_singularities,
     #     "pre_windows_2000_compatible_access_group": len(
     #         users.pre_windows_2000_compatible_access_group
     #     ),
     #     "up_to_date_admincount": len(users.unpriviledged_users_with_admincount)
     #     + len([dic for dic in users.users_nb_domain_admins if not dic["admincount"]]),
-    #     "fgpp": len(users.fgpps),
     #     # Azure
     #     "azure_users_paths_high_target": len(azure.azure_users_paths_high_target),
     #     "azure_ms_graph_controllers": len(azure.azure_ms_graph_controllers),
@@ -562,55 +483,32 @@ def render(
     )  # for the chart evolution over time
 
     # dico_name_description = {
-    #     "dc_impersonation": f"{dico_data['value']['dc_impersonation']} paths to impersonate DCs",
-    #     "users_pwd_not_changed_since": f"{dico_data['value']['users_pwd_not_changed_since']} unchanged passwords > {int((neo4j.password_renewal)/30)} months",
-    #     "kerberoastables": f"{dico_data['value']['kerberoastables']} kerberoastable accounts",
-    #     "as_rep": f"{dico_data['value']['as_rep']} accounts are AS-REP-roastable",
     #     "non-dc_with_unconstrained_delegations": f"{dico_data['value']['non-dc_with_unconstrained_delegations']} objects with unconstrained delegations",
-    #     "users_constrained_delegations": f"{dico_data['value']['users_constrained_delegations']} users with constrained delegations",
-    #     "krb_last_change": f"krbtgt not updated in > {dico_data['value']['krb_last_change']} days",
-    #     "users_admin_of_computers": f"{dico_data['value']['users_admin_of_computers']} users with admin privs.",
     #     "server_users_could_be_admin": f"Up to {dico_data['value']['server_users_could_be_admin']} users could compromise a server",
     #     "dom_admin_on_non_dc": f"{dico_data['value']['dom_admin_on_non_dc']} domain admin sessions on non-DC",
     #     "nb_domain_admins": f"{dico_data['value']['nb_domain_admins']} domain admins",
     #     "users_shadow_credentials_to_non_admins": f"Users can be impersonated by up {dico_data['value']['users_shadow_credentials_to_non_admins']} users", DONE
-    #     "users_shadow_credentials": f"{dico_data['value']['users_shadow_credentials']} users can impersonate privileged accounts",
     #     "can_dcsync": f"{dico_data['value']['can_dcsync']} non DA/DC objects have DCSync privileges",
     #     "computers_members_high_privilege": f"{dico_data['value']['computers_members_high_privilege']} computers with high privs.",
     #     "computers_admin_of_computers": f"{computers.count_computers_admins} computers admin of {computers.count_computers_admins_target} computers",
     #     "graph_path_objects_to_da": f"{len(list(set(p.nodes[0] for p in [item for sublist in domains.users_to_domain_admin.values() for item in sublist]))) if domains.users_to_domain_admin else 0} users have a path to DA",
-    #     "computers_last_connexion": f"{dico_data['value']['computers_last_connexion']} ghost computers",
     #     "users_rdp_access": f"{dico_data['value']['users_rdp_access']} users with RDP access",
     #     "computers_list_of_rdp_users": f"{dico_data['value']['computers_list_of_rdp_users']} computers with RDP access",
-    #     "never_expires": f"{dico_data['value']['never_expires']} users w/o password expiration",
-    #     "dormants_accounts": f"{dico_data['value']['dormants_accounts']} dormant accounts",
     #     "unpriv_to_dnsadmins": f"{dico_data['value']['unpriv_to_dnsadmins']} paths to DNSAdmins group",
     #     "objects_to_operators_member": f"{dico_data['value']['objects_to_operators_member']} paths to Operator (Print, Server, Backup or Accounts) members",
-    #     "computers_os_obsolete": f"{dico_data['value']['computers_os_obsolete']} computers with obsolete OS",
-    #     "users_pwd_cleartext": f"{dico_data['value']['users_pwd_cleartext']} users with clear text password",
-    #     "computers_without_laps": f"{dico_data['value']['computers_without_laps']} % computers without LAPS",
     #     "graph_path_objects_to_ou_handlers": f"{domains.nb_starting_nodes_to_ous} dangerous control paths over {domains.nb_ous_with_da} OUs",
-    #     "vuln_functional_level": f"{dico_data['value']['vuln_functional_level']} insufficient forest and domains functional levels",
     #     "vuln_permissions_adminsdholder": f"{dico_data['value']['vuln_permissions_adminsdholder']} paths to an AdminSDHolder container",
-    #     "graph_list_objects_rbcd": f"{users.rbcd_nb_start_nodes} users can perform an RBCD attack on {users.rbcd_nb_end_nodes} computers",
     #     "objects_to_adcs": f"{dico_data['value']['objects_to_adcs']} ADCS servers can be compromised",
     #     "users_GPO_access": f"{dico_data['value']['users_GPO_access']} GPO can be exploited",
     #     "da_to_da": f"{domains.crossDomain} paths between different DA",
-    #     "can_read_gmsapassword_of_adm": f"{len(users.can_read_gmsapassword_of_adm)} can read GMSA passwords of Administrators",
     #     "dangerous_paths": f"More than {domains.total_dangerous_paths} dangerous paths to DA",
-    #     "users_password_not_required": f"{dico_data['value']['users_password_not_required']} users can bypass your password policy",
-    #     "can_read_laps": f"{len(users.can_read_laps_parsed)} accounts can read LAPS passwords",
     #     "anomaly_acl": f"{users.number_group_ACL_anomaly} groups with potential ACL anomalies",
-    #     "empty_groups": f"{len(domains.empty_groups)} groups without any member",
-    #     "empty_ous": f"{len(domains.empty_ous)} OUs without any member",
     #     "has_sid_history": f"{len(users.has_sid_history)} objects can exploit SID History",
     #     "cross_domain_admin_privileges": f"{dico_data['value']['cross_domain_admin_privileges']} accounts have cross-domain admin privileges",
     #     "guest_accounts": f"{dico_data['value']['guest_accounts']} guests accounts are enabled",
     #     "up_to_date_admincount": f"{dico_data['value']['priviledge_users_without_admincount']} priviledged accounts without admincount and {dico_data['value']['unpriviledged_users_with_admincount']} unpriviledged accounts with admincount",
     #     "privileged_accounts_outside_Protected_Users": f"{dico_data['value']['privileged_accounts_outside_Protected_Users']} priviledged accounts not in Protected Users group",
-    #     "primaryGroupID_lower_than_1000": f"{dico_data['value']['rid_singularities']} accounts with unknown RIDs or unexpected names",
     #     "pre_windows_2000_compatible_access_group": f"{len(users.pre_windows_2000_compatible_access_group)} inadequate membership users in Pre-Win $2000$ Compatible Access group",
-    #     "fgpp": f"{len(users.fgpps)} FGPP defined",
     #     # azure
     #     "azure_users_paths_high_target": f"{len(azure.azure_users_paths_high_target)} Users with a Path to High Value Targets",
     #     "azure_ms_graph_controllers": f"{len(azure.azure_ms_graph_controllers)} paths to MS Graph controllers",
@@ -901,7 +799,7 @@ def render(
                             details=dico_name_description.get(vuln),
                             evolution_data=data["dico_data_evolution_time"],
                             evolution_labels=data["label_evolution_time"],
-                            category=k,
+                            category=dico_category_invert[vuln],
                             title=DESCRIPTION_MAP[vuln]["title"],
                         ).render(page_f, return_html=True)
 

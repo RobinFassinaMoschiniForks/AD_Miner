@@ -1,5 +1,9 @@
 from ad_miner.sources.modules import logger
 from ad_miner.sources.modules.utils import CONFIG_MAP
+from ad_miner.sources.modules.page_class import Page
+from ad_miner.sources.modules.graph_class import Graph
+from ad_miner.sources.modules.node_neo4j import Node
+
 
 import re
 import datetime
@@ -226,6 +230,102 @@ def containsDAs(req, criticity=1):
         # if object.get("is_da"):
         #     if object["is_da"] == True:
         #         return criticity
+
+    if len(req) > 0:
+        return criticity + 1
+
+    return 5
+
+
+def parseConstrainedData(list_of_dict):
+    final_dict = {}
+    for dict in list_of_dict:
+        if dict["name"] in final_dict.keys():
+            final_dict[dict["name"]] += [dict["computer"]]
+        else:
+            final_dict[dict["name"]] = [dict["computer"]]
+    return final_dict
+
+
+def createGraphPage(
+    render_prefix, page_name, page_title, page_description, graph_data, requests_results
+):
+    page = Page(render_prefix, page_name, page_title, page_description)
+    graph = Graph()
+    graph.setPaths(graph_data)
+
+    graph.addGhostComputers(requests_results["dico_ghost_computer"])
+    graph.addGhostUsers(requests_results["dico_ghost_user"])
+    graph.addDCComputers(requests_results["dico_dc_computer"])
+    graph.addUserDA(requests_results["dico_user_da"])
+    graph.addGroupDA(requests_results["dico_da_group"])
+
+    page.addComponent(graph)
+    page.render()
+
+
+def findAndCreatePathToDaFromUsersList(
+    requests_results, arguments, admin_user, computers
+):
+    users_to_domain_admin = requests_results["users_to_domain_admin"]
+    computers_to_domain_admin = requests_results["computers_to_domain_admin"]
+    if users_to_domain_admin is None:
+        return 0, 0
+    path_to_generate = []
+    # node_to_add = Node(id=42424243, labels="User",
+    #                    name=admin_user, domain="start")
+    list_domain = []
+
+    dico_description_computers_path_to_da = {
+        "description": "All compromission paths from computers to domain administrators.",
+        "risk": "This graph shows all the paths that an attacker could take to become domain admin if they had compromised a computer. These paths show potential privilege escalation paths in the domain. If an attacker compromises a computer, he could use these paths to become domain admin.",
+        "poa": "Review these paths and make sure that they are not exploitable. Cut some of the links between the Active Directory objects by changing configuration in order to reduce the number of possible paths.",
+    }
+
+    for paths in computers_to_domain_admin.values():
+        for path in paths:
+            if path.nodes[0].name in computers:
+                # if path.start_node.name in computers:
+                node_to_add = Node(
+                    id=42424243,
+                    labels="User",
+                    name=admin_user,
+                    domain="start",
+                    tenant_id=None,
+                    relation_type="AdminTo",
+                )
+                # relation = Relation(
+                #     id=88888, nodes=[node_to_add, path.start_node], type="AdminTo"
+                # )
+                path.nodes.insert(0, node_to_add)
+                path_to_generate.append(path)
+                if path.nodes[-1].domain not in list_domain:
+                    list_domain.append(path.nodes[-1].domain)
+    if len(path_to_generate):
+        createGraphPage(
+            arguments.cache_prefix,
+            "users_path_to_da_from_%s" % admin_user,
+            "Path to domain admins",
+            dico_description_computers_path_to_da,
+            path_to_generate,
+            requests_results,
+        )
+    return (len(path_to_generate), len(list_domain))
+
+
+def hasPathToDA(
+    req, criticity=1
+):  # ne marche que partiellement : besoin de rajouter l'attribut has_path_to_DA dans toutes les requêtes pertinentes + dans domains.py/findAndCreatePathToDaFromComputersList
+    if req is None:
+        return -1
+
+    for object in req:
+        # print(object)
+        if not object.get("has_path_to_da"):
+            continue
+        if object["has_path_to_da"] == True:
+            # print(object)
+            return criticity
 
     if len(req) > 0:
         return criticity + 1

@@ -6,23 +6,8 @@ from hashlib import md5
 from ad_miner.sources.modules.utils import HTML_DIRECTORY
 
 old_dico_category = {
-    "passwords": [
-        "users_pwd_cleartext",
-        "users_pwd_not_changed_since",
-        "never_expires",
-        "computers_without_laps",
-        "can_read_gmsapassword_of_adm",
-        "users_password_not_required",
-        "can_read_laps",
-    ],
-    "kerberos": [
-        "kerberoastables",
-        "as_rep",
-        "users_constrained_delegations",
-        "krb_last_change",
-        "graph_list_objects_rbcd",
-        "users_shadow_credentials",
-    ],
+    "passwords": [],
+    "kerberos": [],
     "permissions": [
         "users_admin_of_computers",
         "server_users_could_be_admin",
@@ -49,17 +34,7 @@ old_dico_category = {
         "privileged_accounts_outside_Protected_Users",
         "pre_windows_2000_compatible_access_group",
     ],
-    "misc": [
-        "computers_os_obsolete",
-        "dormants_accounts",
-        "dc_impersonation",
-        "computers_last_connexion",
-        "vuln_functional_level",
-        "empty_groups",
-        "empty_ous",
-        "primaryGroupID_lower_than_1000",
-        "fgpp",
-    ],
+    "misc": [],
     "az_permissions": [
         "azure_users_paths_high_target",
         "azure_admin_on_prem",
